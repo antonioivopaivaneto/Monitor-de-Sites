@@ -7,15 +7,23 @@ use App\Http\Requests\StoreUpdateEndpointRequest;
 use App\Models\Endpoint;
 use App\Models\Sites;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class EndpointController extends Controller
 {
     public function index(string $siteId)
     {
-        $site = Sites::with('endpoints')->find($siteId);
+        $site = Sites::with('endpoints.check')->find($siteId);
         if (!$site) {
             return back();
         }
+
+        // if( Gate::denies('owner',$site)){
+       //if( Gate::allows('owner',$site)){
+       //return back();
+       // }
+
+        $this->authorize('owner',$site);
 
         $endpoints = $site->endpoints;
 
@@ -28,11 +36,16 @@ class EndpointController extends Controller
             return back();
         }
 
+        $this->authorize('owner',$site);
+
+
 
         return view('admin.endpoints.create',compact('site'));
     }
     public function store(StoreUpdateEndpointRequest $request,Sites $site)
     {
+        $this->authorize('owner',$site);
+
         $site->endpoints()->create($request->validated());
 
 
@@ -43,16 +56,22 @@ class EndpointController extends Controller
 
     public function edit(Sites $site,Endpoint $endpoint)
     {
+        $this->authorize('owner',$site);
+
         return view('admin/endpoints/edit', compact('site','endpoint'));
     }
     public function update(StoreUpdateEndpointRequest $request,Sites $site,Endpoint $endpoint)
     {
+        $this->authorize('owner',$site);
+
         $endpoint->update($request->validated());
 
         return  redirect()->route('endpoints.index',$site->id)->with('message','Endpoint atualizado com sucesso');
     }
     public function destroy(Sites $site,Endpoint $endpoint)
     {
+        $this->authorize('owner',$site);
+
         $endpoint->checks()->delete();
         $endpoint->delete();
 

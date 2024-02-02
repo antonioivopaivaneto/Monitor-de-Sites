@@ -3,7 +3,13 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+
+use App\Models\Check;
+use App\Models\Endpoint;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -24,6 +30,15 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        Gate::define('owner',function(User $user,Model $model){
+            return $user->id === $model->user_id;
+
+        });
+        Gate::define('ownerChecks',function(User $user,Endpoint $endpoint){
+            return $user->id === $endpoint->site->user_id;
+
+        });
 
         //
     }

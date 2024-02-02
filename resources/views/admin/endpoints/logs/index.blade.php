@@ -24,6 +24,9 @@
                                     Status
                                 </th>
                                 <th scope="col" class="px-6 py-6 bg-gray-50 dark:bg-gray-800">
+                                    Data
+                                </th>
+                                <th scope="col" class="px-6 py-6 bg-gray-50 dark:bg-gray-800">
                                     Body
                                 </th>
                             </tr>
@@ -33,6 +36,9 @@
                                 <tr class="border-b border-gray-200 dark:border-gray-700">
                                     <td class="px-6 py-4">
                                         {{ $check->status_code }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {{ $check->created_at }}
                                     </td>
                                     <td class="px-6 py-4">
                                         {{ $check->response_body  ?? "-"}}
